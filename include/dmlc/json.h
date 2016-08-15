@@ -153,8 +153,8 @@ class JSONWriter {
    * \brief Constructor.
    * \param os the output stream.
    */
-  explicit JSONWriter(std::ostream *os)
-      : os_(os) {}
+  explicit JSONWriter(std::ostream *os, const bool need_seperator = true)
+      : os_(os), need_seperator_(need_seperator) {}
   /*!
    * \brief Write a string that do not contain escape characters.
    * \param s the string to be written.
@@ -232,6 +232,10 @@ class JSONWriter {
  private:
   /*! \brief Output stream */
   std::ostream *os_;
+  /*!
+   * \brief write seperators or not
+   */
+  bool need_seperator_;
   /*!
    * \brief record how many element processed in
    *  current array/object scope.
@@ -813,6 +817,7 @@ inline void JSONWriter::Write(const ValueType &value) {
 }
 
 inline void JSONWriter::WriteSeperator() {
+  if (!need_seperator_) return;
   if (scope_multi_line_.size() == 0 || scope_multi_line_.back()) {
     *os_ << '\n' << std::string(scope_multi_line_.size() * 2, ' ');
   }
